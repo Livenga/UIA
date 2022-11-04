@@ -73,15 +73,8 @@ public class HWindow
     private static bool OnEnumWindows(IntPtr hWnd, IntPtr lParam)
     {
         // Window Text
-        var windowTextLength = WA32.User32.GetWindowTextLength(hWnd);
-        var windowTextBuffer = new StringBuilder(windowTextLength + 1);
-
-        string? windowText = null;
-        int trueTextLength = WA32.User32.GetWindowText(hWnd, windowTextBuffer, windowTextBuffer.Capacity);
-        if(trueTextLength > 0)
-        {
-            windowText = windowTextBuffer.ToString();
-        }
+        string? windowText = User32.Wrap
+            .GetWindowText(hWnd);
 
         // Process and Thread ID
         int processId = 0;
@@ -90,14 +83,16 @@ public class HWindow
         // Module Filename
         var hProcess = WA32.Kernel32.OpenProcess(0x0410, true, processId);
         var moduleFileNameBuffer = new StringBuilder(1024);
-        var moduleFileLength = WA32.Kernel32.GetModuleFileNameEx(hProcess, IntPtr.Zero, moduleFileNameBuffer, moduleFileNameBuffer.Capacity);
+        var moduleFileLength = WA32.Kernel32.GetModuleFileNameEx(
+                hProcess,
+                IntPtr.Zero,
+                moduleFileNameBuffer,
+                moduleFileNameBuffer.Capacity);
 
         string? moduleFile = null;
         if(moduleFileLength > 0)
         {
-            char[] _moduleFile = new char[moduleFileLength];
-            moduleFileNameBuffer.CopyTo(0, _moduleFile, 0, moduleFileLength);
-            moduleFile = new string(_moduleFile);
+            moduleFile = moduleFileNameBuffer.ToString(0, moduleFileLength);
         }
 
         WA32.Kernel32.CloseHandle(hProcess);

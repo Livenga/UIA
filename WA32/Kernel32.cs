@@ -1,6 +1,7 @@
 namespace WA32;
 
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -27,4 +28,27 @@ public static class Kernel32
             IntPtr hModule,
             [Out]StringBuilder lpFileName,
             int nSize);
+
+    /// <summary></summary>
+    [DllImport("kernel32.dll", EntryPoint = "SetDllDirectoryW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern bool SetDllDirectory(string lpPathName);
+
+    /// <summary></summary>
+    [DllImport("kernel32.dll", EntryPoint = "LoadLibraryW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr LoadLibrary(string lpLibFileName);
+
+    /// <summary></summary>
+    [DllImport("kernel32.dll", EntryPoint = "FreeLibrary", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern bool FreeLibrary(IntPtr hLibModule);
+
+
+    /// <summary></summary>
+    public static void ThrowWin32Exception()
+    {
+        var errorCode = GetLastError();
+        if(errorCode != 0)
+        {
+            throw new Win32Exception(errorCode);
+        }
+    }
 }
