@@ -47,14 +47,47 @@ public class User32
     [DllImport("user32.dll", EntryPoint = "EnumPropsExW", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern int EnumPropsEx(IntPtr hWnd, EnumPropsExProc lpEnumFunc, IntPtr lParam);
 
+    // EM_SETMODIFY True, IntPtr.Zero
     /// <summary></summary>
     [DllImport("user32.dll", EntryPoint = "SendMessageW", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
 
     /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "MessageBoxW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern int MessageBox(
+        IntPtr hWnd,
+        string lpText,
+        string lpCaption,
+        uint   uType);
+
+
+    /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "EnableWindow", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+
+    /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "GetComboBoxInfo", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern bool GetComboBoxInfo(IntPtr hWnd, ref ComboBoxInfo pcbi);
+
+
+    /// <summary></summary>
     public static class Wrap
     {
+        /// <summary></summary>
+        public static int MessageBoxShow(
+                string           caption,
+                string           text,
+                MessageBoxIcon   icon   = MessageBoxIcon.Information,
+                MessageBoxButton button = MessageBoxButton.OK,
+                MessageBoxModal  modal  = MessageBoxModal.App) =>
+            User32.MessageBox(
+                    hWnd:      IntPtr.Zero,
+                    lpText:    text,
+                    lpCaption: caption,
+                    uType:     (uint)icon | (uint)button | (uint)modal);
+
+
         /// <summary>
         /// </summary>
         public static string? GetWindowText(IntPtr hWnd)

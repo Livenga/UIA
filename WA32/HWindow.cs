@@ -2,6 +2,8 @@ namespace WA32;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 
 
@@ -33,16 +35,16 @@ public class HWindow
 
     /// <summary></summary>
     private HWindow(
-            IntPtr handle,
+            IntPtr  handle,
             string? text,
-            int processId,
-            int threadId,
+            int     processId,
+            int     threadId,
             string? moduleFile)
     {
-        _handle = handle;
-        _text = text;
-        _processId = processId;
-        _threadId = threadId;
+        _handle     = handle;
+        _text       = text;
+        _processId  = processId;
+        _threadId   = threadId;
         _moduleFile = moduleFile;
     }
 
@@ -73,8 +75,20 @@ public class HWindow
     private static bool OnEnumWindows(IntPtr hWnd, IntPtr lParam)
     {
         // Window Text
-        string? windowText = User32.Wrap
-            .GetWindowText(hWnd);
+        string? windowText = null;
+
+        // NOTE 例外が発生する可能性があったため, Win32Exception は無視 
+        try
+        {
+            windowText = User32.Wrap.GetWindowText(hWnd);
+        }
+        catch(Win32Exception eWin32)
+        {
+#if DEBUG
+            Debug.WriteLine($"ERROR | (0x{eWin32.ErrorCode:X8}) {eWin32.GetType().FullName} {eWin32.Message}");
+#endif
+        }
+
 
         // Process and Thread ID
         int processId = 0;

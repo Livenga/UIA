@@ -15,6 +15,14 @@ using System.Windows.Forms;
 public partial class MainForm : Form
 {
     /// <summary></summary>
+    public string StatusMessage
+    {
+        set => messageStrip.Text = value;
+        get => messageStrip.Text;
+    }
+
+
+    /// <summary></summary>
     public MainForm()
     {
         InitializeComponent();
@@ -26,7 +34,16 @@ public partial class MainForm : Form
     {
         if(source is TextBox tbx)
         {
-            messageStrip.Text = $"{tbx.Name}({tbx.Text}) {nameof(OnExampleTextChanged)}";
+            StatusMessage = $"{tbx.Name}({tbx.Text}) {nameof(OnExampleTextChanged)}";
+        }
+    }
+
+    /// <summary></summary>
+    private void OnExampleSelectorSelectedIndexChanged(object source, EventArgs e)
+    {
+        if(source is ComboBox cbx)
+        {
+            StatusMessage = $"Example Selector Selected #{cbx.SelectedIndex}";
         }
     }
 
@@ -35,8 +52,14 @@ public partial class MainForm : Form
     {
         if(source is CheckBox cbx)
         {
-            messageStrip.Text = $"{cbx.Name}({cbx.Checked}) {nameof(OnExampleCheckBoxCheckedChanged)}";
+            StatusMessage = $"{cbx.Name}({cbx.Checked}) {nameof(OnExampleCheckBoxCheckedChanged)}";
         }
+    }
+
+    /// <summary></summary>
+    private void OnMessageClearClick(object source, EventArgs e)
+    {
+        StatusMessage = "###";
     }
 
     /// <summary></summary>
