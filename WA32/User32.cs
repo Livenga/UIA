@@ -72,9 +72,26 @@ public class User32
 
 
     /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+
+    /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+    /// <summary></summary>
     public static class Wrap
     {
-        /// <summary></summary>
+        /// <summary>
+        /// </summary>
+        public static IntPtr GetWindowLong(IntPtr hWnd, int nIndex) => IntPtr.Size switch
+        {
+            8 => User32.GetWindowLongPtr(hWnd, nIndex),
+            _ => User32.GetWindowLong(hWnd, nIndex),
+        };
+
+        /// <summary>
+        /// </summary>
         public static int MessageBoxShow(
                 string           caption,
                 string           text,

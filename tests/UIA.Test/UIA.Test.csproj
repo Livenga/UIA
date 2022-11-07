@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="AutomationComboBoxTest.cs" />
     <Compile Include="AutomationTextBoxTest.cs" />
+    <Compile Include="ControlTypeTest.cs" />
     <Compile Include="UIAOperatorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

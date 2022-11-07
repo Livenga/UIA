@@ -46,6 +46,8 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComboBoxAutomation.cs" />
+    <Compile Include="DebugObj.cs" />
     <Compile Include="Extensions\ExtensionAutomationElement.cs" />
     <Compile Include="UIAOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

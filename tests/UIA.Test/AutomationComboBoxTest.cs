@@ -71,6 +71,37 @@ public class AutomationComboBoxTest
         }
     }
 
+    /// <summary></summary>
+    [TestMethod]
+    public void GetItemsTest()
+    {
+        var aeComboBox = AutomationElement.FromHandle(_hWindow.Handle).FindFirst(
+                scope: TreeScope.Subtree,
+                condition: new PropertyCondition(
+                    AutomationElement.ControlTypeProperty,
+                    ControlType.ComboBox));
+
+        foreach(var name in ComboBoxAutomation.GetItems(new IntPtr(aeComboBox.Current.NativeWindowHandle)))
+        {
+            Debug.WriteLine(name);
+        }
+    }
+
+
+    /// <summary></summary>
+    [TestMethod]
+    public void NotifyEditChangeTest()
+    {
+        var aeComboBox = AutomationElement.FromHandle(_hWindow.Handle).FindFirst(
+                scope: TreeScope.Subtree,
+                condition: new PropertyCondition(
+                    AutomationElement.ControlTypeProperty,
+                    ControlType.ComboBox));
+
+        ComboBoxAutomation.NotifyEditChange(
+                _hWindow.Handle,
+                new IntPtr(aeComboBox.Current.NativeWindowHandle));
+    }
 
     /// <summary></summary>
     private void PrintProperties<T>(T value) where T : notnull
