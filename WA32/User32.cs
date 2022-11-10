@@ -36,6 +36,10 @@ public class User32
             int nMaxCount);
 
     /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "GetClassLongW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern int GetClassLong(IntPtr hWnd, int nIndex);
+
+    /// <summary></summary>
     [DllImport("user32.dll", EntryPoint = "EnumChildWindows", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern bool EnumChildWindows(IntPtr hWndParent, EnumChildProc lpEnumFunc, IntPtr lParam);
 
@@ -46,6 +50,10 @@ public class User32
     /// <summary></summary>
     [DllImport("user32.dll", EntryPoint = "EnumPropsExW", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern int EnumPropsEx(IntPtr hWnd, EnumPropsExProc lpEnumFunc, IntPtr lParam);
+
+    /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "GetDesktopWindow", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr GetDesktopWindow();
 
     // EM_SETMODIFY True, IntPtr.Zero
     /// <summary></summary>
@@ -72,6 +80,10 @@ public class User32
 
 
     /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "GetWindow", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
+
+    /// <summary></summary>
     [DllImport("user32.dll", EntryPoint = "GetWindowLongW", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
 
@@ -80,14 +92,64 @@ public class User32
     public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
     /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "GetWindowModuleFileNameW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern uint GetWindowModuleFileName(
+            IntPtr hWnd,
+            IntPtr pszFileName,
+            uint cchFileNameMax);
+
+    /// <summary></summary>
+    [DllImport("user32.dll", EntryPoint = "SetWindowsHookExW", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr SetWindowsHookEx(
+            int      idHook,
+            HookProc lpfn,
+            IntPtr   hmod,
+            int      dwThreadId);
+
+
+    /// <summary></summary>
     public static class Wrap
     {
+        /// <summary></summary>
+        public static string? GetWindowModuleFileName(
+                IntPtr hWnd,
+                int nMaxCount = 256)
+        {
+            string? name = null;
+            IntPtr h = IntPtr.Zero;
+
+            try
+            {
+                h = Marshal.AllocCoTaskMem(cb: nMaxCount);
+                var length = User32.GetWindowModuleFileName(hWnd, h, (uint)nMaxCount);
+
+                if(length == 0)
+                {
+                    throw new System.ComponentModel.Win32Exception(Kernel32.GetLastError());
+                }
+
+                name = Marshal.PtrToStringUni(h);
+
+                Marshal.FreeCoTaskMem(h);
+            }
+            catch
+            {
+                if(h != IntPtr.Zero)
+                {
+                    Marshal.FreeCoTaskMem(h);
+                }
+                throw;
+            }
+
+            return name;
+        }
+
         /// <summary>
         /// </summary>
         public static IntPtr GetWindowLong(IntPtr hWnd, int nIndex) => IntPtr.Size switch
         {
             8 => User32.GetWindowLongPtr(hWnd, nIndex),
-            _ => User32.GetWindowLong(hWnd, nIndex),
+              _ => User32.GetWindowLong(hWnd, nIndex),
         };
 
         /// <summary>
@@ -142,6 +204,34 @@ public class User32
             }
 
             return sb.ToString(0, ret);
+        }
+
+        /// <summary></summary>
+        public static string? TryGetWindowText(IntPtr hWnd)
+        {
+            try
+            {
+                return GetWindowText(hWnd);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary></summary>
+        public static string? TryGetClassName(
+                IntPtr hWnd,
+                int length = 2048)
+        {
+            try
+            {
+                return GetClassName(hWnd, length);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

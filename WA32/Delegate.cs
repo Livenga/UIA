@@ -13,3 +13,6 @@ public delegate bool EnumChildProc(IntPtr hWnd, IntPtr lParam);
 
 /// <summary></summary>
 public delegate bool EnumPropsExProc(IntPtr hWnd, IntPtr lpszString, IntPtr hData, IntPtr dwData);
+
+/// <summary></summary>
+public delegate IntPtr HookProc(int code, IntPtr wParam, IntPtr lParam);

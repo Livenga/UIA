@@ -18,6 +18,15 @@ public static class Kernel32
     public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, Int32 dwProcessId);
 
     /// <summary></summary>
+    [DllImport("psapi.dll", EntryPoint = "EnumProcessModulesEx", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern bool EnumProcessModulesEx(
+            IntPtr hProcess,
+            [Out]IntPtr lphModule,
+            int cb,
+            [Out]IntPtr lpcbNeeded,
+            int dwFilterFlag);
+
+    /// <summary></summary>
     [DllImport("kernel32.dll", EntryPoint = "CloseHandle", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern bool CloseHandle(IntPtr hObject);
 
@@ -48,7 +57,7 @@ public static class Kernel32
         var errorCode = GetLastError();
         if(errorCode != 0)
         {
-            throw new Win32Exception(errorCode);
+                throw new Win32Exception(errorCode);
         }
     }
 }

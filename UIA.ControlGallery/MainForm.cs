@@ -57,6 +57,16 @@ public partial class MainForm : Form
     }
 
     /// <summary></summary>
+    private void OnRaiseMessageBoxClick(object source, EventArgs e)
+    {
+        MessageBox.Show(
+                caption: "情報",
+                text: $"メッセージ {Guid.NewGuid().ToString()}",
+                icon: MessageBoxIcon.Information,
+                buttons: MessageBoxButtons.OK);
+    }
+
+    /// <summary></summary>
     private void OnMessageClearClick(object source, EventArgs e)
     {
         StatusMessage = "###";

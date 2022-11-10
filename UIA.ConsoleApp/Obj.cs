@@ -19,7 +19,11 @@ public static class Obj
         Debug.WriteLine($"DEBUG | {t.GetType().FullName}");
         foreach(var prop in props)
         {
-            Debug.WriteLine($"\t{prop.Name} {prop.GetValue(value)?.ToString() ?? string.Empty}");
+            try
+            {
+                Debug.WriteLine($"\t{prop.Name} {prop.GetValue(value)?.ToString() ?? string.Empty}");
+            }
+            catch { }
         }
     }
 }
